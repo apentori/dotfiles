@@ -1,0 +1,76 @@
+    [init]
+        defaultBranch 	= master
+    [user]
+	email	 	= alexis@status.im
+	name		= Alexis Pentori
+	signingkey	= E1ADF100D32E73C2
+    [core]
+        editor      = nvim
+        quotePath   = false
+        commitGraph = true
+        autocrlf    = input
+    [diff]
+        tool        = vimdif
+    [merge]
+        tool        = vimdiff
+        conflictstyle = diff3
+    [alias]
+        a   = add
+        b   = branch
+        bl  = for-each-ref --sort=committerdate refs/heads/ --format='%(color: red)%(objectname:short) %(color: cyan)%(committerdate:iso) %(align:width=25)%(color:bold yellow)%(authorname)%(end) %(color:bold green)>%(color:reset) %(refname:short)'
+        cf  = cat-file
+        cat = cat-file
+        co  = checkout
+        cp  = cherry-pick
+        df  = diff
+        f   = fetch
+        l   = log --oneline --decorate
+        ls  = ls-files
+        c   = commit --verbose --no-verify --gpg-sign --signoff
+        fix = commit --verbose --no-verify --gpg-sign --signoff --fixup
+        m   = commit --verbose --no-verify --gpg-sign --signoff --amend
+        mm  = commit --verbose --no-verify --gpg-sign --signoff --amend --no-edit
+        pl  = pull
+        plf = pull --force --rebase
+        ps  = push
+        psf = push --force
+        r   = rebase
+        rc  = git rebase --continue
+        rl  = reflog
+        rs  = reset
+        rsh = reset --hard
+        rst = reset --hard HEAD
+        s   = stash
+        st  = status -sb
+        sl  = log --pretty=format:'%<(8)%Cred%h%Creset %C(cyan)%ai%Creset %C(bold yellow)%<(20)%an %C(bold green)>%Creset %s %C(yellow)%d%Creset' --abbrev-commit
+        sla = log --pretty=format:'* %h %s %d' --abbrev-commit
+        slg = log --graph --pretty=format:'%<(8)%Cred%h%Creset %C(cyan)%ai%Creset %Cgreen(%<(12)%cr) %C(bold blue)%<(21)<%an>%Creset %s %C(yellow)%d%Creset' --abbrev-commit
+        sm  = submodule
+        u   = url
+        up  = branch --set-upstream-to
+        x   = sync
+
+    [branch "master"]
+        remote = origin
+        merge = refs/heads/master
+    [credential]
+        helper = cache --timeout=1800
+    [color]
+        ui = true
+    [push]
+        default = current
+    [pull]
+        default = current
+        ff = only
+    [difftool]
+        prompt = false
+    [web]
+        browser = brave
+    [commit]
+        gpgsign = true
+    [gpg]
+        program = gpg
+    [receive]
+        advertisePushOptions = true
+    [gc]
+        writeCommitGraph = true
