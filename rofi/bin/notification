@@ -1,0 +1,7 @@
+#/usr/bin/env bash
+
+rofi_command="rofi  "
+
+notification_list=$(drunstctl history | jq '.data[] | [. | map(.) | .[] | {app: .appname.data, title:.summary.data , detail: .message.data}]'
+
+

@@ -1,77 +1,13 @@
 #!/usr/bin/env bash
 set -eo pipefail
 
-VALID_ARGS=$(getopt -o fdh --long force,dry-run,help: -- "$@")
-if [[ $? -ne 0 ]]; then
-	exit 1
-fi
-
-eval set -- "$VALID_ARGS"
-while [ : ]; do
-	case "$1" in
-	-f | --force)
-		FORCE=1
-		shift
-		;;
-	-d | --dry-run)
-		DRY_RUN=1
-		shift
-		;;
-	-h | --help)
-		echo 'Usage: symlinkconf [-f|-d]' >&2
-		exit
-		;;
-	--)
-		shift
-		break
-		;;
-	esac
+# Complet this later
+conf_dir=("hypr" "dunst" "kitty" "rofi" "swaylock" "waybar" "wlogout")
+for dir in "${conf_dir[@]}"
+do
+  echo "Creating symlink of ${dir}"
+  ln -s "${HOME}/dotfiles/${dir}" "${HOME}/.config"
 done
 
-# Repo location
-SCRIPT_DIR=$(dirname $(readlink -f "$0"))
-cd "$SCRIPT_DIR"
-GIT_ROOT=$(git rev-parse --show-toplevel)
-cd - >/dev/null
-
-# Load submodules
-cd "$GIT_ROOT"
-git submodule update --init --recursive
-cd - >/dev/null
-
-# Find files to symlink
-CONFIG_FILES="bin .gnupg/gpg.conf .gnupg/gpg-agent.conf"
-CONFIG_FILES+=$(find "$GIT_ROOT" -regextype posix-extended -maxdepth 1 -name '.*' -not -regex '.*\.(git|gitignore|gnupg)' -printf "%P \n")
-CONFIG_FILES+=" "
-CONFIG_FILES+=$(find "$GIT_ROOT/.config" -maxdepth 1 -printf "%P \n" | sed -e 1d -e 's/^/.config\//')
-
-NO_CHANGES=1
-
-for CONFIG_FILE in ${CONFIG_FILES}; do
-	SOURCE="${GIT_ROOT}/${CONFIG_FILE}"
-	DEST="${HOME}/${CONFIG_FILE}"
-	DEST_DIR=$(dirname "${DEST}")
-	if [[ ! -d "${DEST_DIR}" ]]; then
-		mkdir -p "${DEST_DIR}"
-	fi
-	if [[ ${FORCE} ]]; then
-		echo "FORCE LINKING: ${SOURCE} -> ${DEST}" >&2
-		ln -sf "${SOURCE}" "${DEST}"
-	elif [[ -f "${DEST}" ]]; then
-		echo "IS_FILE: ${DEST}" >&2
-	elif [[ -d "${DEST}" ]]; then
-		echo "IS_DIR:  ${DEST}" >&2
-	elif [[ -L "${DEST}" ]]; then
-		echo "SYMLINK: ${DEST}" >&2
-	else # symlinking withou forcing
-		NO_CHANGES=0
-		echo "LINKING: ${SOURCE} -> ${DEST}" >&2
-		if [[ "${DRY_RUN}" ]]; then
-			ln -s "${SOURCE}" "${DEST}"
-		fi
-	fi
-done
-
-if [[ ${NO_CHANGES} ]]; then
-	echo "No changes necessary."
-fi
+ln -s "${HOME}/dotfiles/.zshrc" "${HOME}"
+ln -s "${HOME}/dotfiles/.gitconfig" "${HOME}"
