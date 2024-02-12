@@ -9,8 +9,8 @@ nm-applet --indicator &
 # The bar
 waybar &
 
-# dunst
-dunst
+# Notification Daemon
+# swaync &
 
 # Auth agent
 polkit-kde-agent
@@ -19,4 +19,3 @@ swayosd-server
 
 wl-paste --type text --watch cliphist store & #Stores only text data
 
-wl-paste --type image --watch cliphist store & #Stores only image data

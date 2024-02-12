@@ -10,7 +10,7 @@ window#waybar {
   background: transparent;
 }
 
-#custom-arch, #workspaces {
+#custom-poweroff, #workspaces, #custom-notification {
   border-radius: 10px;
   background-color: #11111b;
   color: #b4befe;
@@ -21,7 +21,8 @@ window#waybar {
   padding-right: 10px;
 }
 
-#custom-arch {
+
+#custom-poweroff {
   font-size: 20px;
   margin-left: 15px;
   color: #b4befe;
