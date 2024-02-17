@@ -6,8 +6,9 @@ conf_dir=("hypr" "dunst" "kitty" "rofi" "swaylock" "waybar" "wlogout")
 for dir in "${conf_dir[@]}"
 do
   echo "Creating symlink of ${dir}"
-  ln -s "${HOME}/dotfiles/${dir}" "${HOME}/.config"
+  ln -sf "${HOME}/dotfiles/${dir}" "${HOME}/.config"
 done
 
-ln -s "${HOME}/dotfiles/.zshrc" "${HOME}"
-ln -s "${HOME}/dotfiles/.gitconfig" "${HOME}"
+ln -sf "${HOME}/bin " "${HOME}"
+ln -sf "${HOME}/dotfiles/.zshrc" "${HOME}"
+ln -sf "${HOME}/dotfiles/.gitconfig" "${HOME}"

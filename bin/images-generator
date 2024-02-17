@@ -1,0 +1,6 @@
+#!/bin/bash
+
+PROG_DIR=$HOME/tools/stable-diffusion-webui
+MODELS_DIR=$HOME/tools/models/text-to-image
+
+$PROG_DIR/webui.sh

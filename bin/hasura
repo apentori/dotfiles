@@ -1,0 +1,59 @@
+#!/bin/bash
+function call {
+	curl 'https://hasura.infra.status.im/v1/graphql' \
+		-X POST \
+		-H 'content-type: application/json' \
+		--data "{ 
+  \"query\": \"{ 
+      gh_burnup_per_epic(args: 
+        {
+          epic_name: \"${epic_name}\", 
+          finish: \"${end_date}\", 
+          start: \"${start_date}\"
+        }, where: 
+        { 
+          epic_name: {_eq: \"${epic_name}\"} 
+        }
+      ) 
+      { 
+        date 
+        epic_name 
+        total_closed 
+        total_opened 
+      } 
+    }\" 
+}"
+
+}
+
+#call "gh_burnup_per_epic(args: {epic_name: \"E:Desktop Community Bugfixes MVP\", finish: \"2023-08-01\", start: \"2017-01-01\"}, where: {epic_name: {_eq: \"E:Desktop Community Bugfixes MVP\"}}) { date epic_name total_closed  total_opened  }
+epic_name=$1
+start_date=$2
+end_date=$3
+
+echo "Calling gh_burnup_per_epic with  ${epic_name} from ${start_date} to ${end_date}"
+set -x
+QUERY="{ 
+  \"query\": \"{ 
+      gh_burnup_per_epic(args: 
+        {
+          epic_name: \"${epic_name}\", 
+          finish: \"${end_date}\", 
+          start: \"${start_date}\"
+        }, where: 
+        { 
+          epic_name: {_eq: \"${epic_name}\"} 
+        }
+      ) 
+      { 
+        date 
+        epic_name 
+        total_closed 
+        total_opened 
+      } 
+    }\" 
+}"
+
+QUERY_2="{ \"query\" : \"{ gh_burnup_per_epic(args: { epic_name: \"E:Desktop Community Bugfixes MVP\", finish: \"2023-08-01\", start: \"2017-01-01\" }, where: { epic_name: {_eq: \"E:Desktop Community Bugfixes MVP\"} } ) {  date epic_name total_closed  total_opened } }\" }"
+
+call "$QUERY_2"

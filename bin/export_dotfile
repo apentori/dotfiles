@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+scp ~/snippet/.zshrc $1:/home/irotnep/.zshrc

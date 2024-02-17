@@ -1,0 +1,7 @@
+#!/bin/bash
+
+$HOME/tools/text-generation-webui/start_linux.sh \
+	--model $HOME/tools/text-generation-webui/models/dolphin-model-q4_0.gguf \
+	--loader llama.cpp \
+	--character $HOME/tools/text-generation-webui/characters/Prometheus.yaml \
+	--listen-port 7861
