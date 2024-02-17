@@ -3,6 +3,18 @@ export PATH="$PATH:/home/irotnep/.local/bin"
 export PATH="$PATH:$HOME/tools"
 export ZSH="$HOME/.oh-my-zsh"
 
+# Magically link PYTHONPATH to the ZSH array pythonpath
+typeset -T PYTHONPATH pythonpath
+# Hacky way to provide python packages to Ansible for local tasks.
+if [[ -d /etc/profiles/per-user ]]; then
+    for SITE_PACKAGES in /etc/profiles/per-user/$USER/lib/python3.*/site-packages; do
+        export PYTHONPATH="${PYTHONPATH}:${SITE_PACKAGES}"
+    done
+fi
+# Remove duplicates
+typeset -U pythonpath
+export PYTHONPATH
+
 ZSH_THEME="agnoster"
 ZSH_TMUX_AUTOSTART=true
 
@@ -49,8 +61,7 @@ alias grep='grep --color -i'
 alias c='curl -sslf'
 alias ap='ansible-playbook -d'
 alias cm='clipmenu'
-
-
+alias ssh='kitten ssh'
 
 # Function
 
@@ -146,7 +157,7 @@ compdef a=ansible
 
 function select-work-dir() {
     echo "${HOME}"
-    WORK_DIR="${HOME}/projects"
+    WORK_DIR="${HOME}/work"
     SELECTED=$(ls "${WORK_DIR}" | fzf)
     [[ -n "${SELECTED}" ]] && cd "${WORK_DIR}/${SELECTED}"
     echo
@@ -160,7 +171,7 @@ function export-working-vars() {
   export PASSWORD_STORE_DIR=/home/irotnep/.password-store
   export CONSUL_HTTP_TOKEN=$(pass services/consul/http_token)
   eval "$(bw unlock $(pass personnal/bitwarden ) |grep "$ export" | cut -b 3-)"
-  export PASSWORD_STORE_DIR=/home/irotnep/projects/infra-pass
+  export PASSWORD_STORE_DIR=/home/irotnep/work/infra-pass
 }
 zle -N export-working-vars
 bindkey '^w' export-working-vars
@@ -198,12 +209,7 @@ eval $(thefuck --alias)
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export PATH=~/bin:$PATH
 
-# >>>> Vagrant command completion (start)
-fpath=(/opt/vagrant/embedded/gems/2.3.4/gems/vagrant-2.3.4/contrib/zsh $fpath)
-compinit
-# <<<<  Vagrant command completion (end)
-#
-export ANSIBLE_REPOS_PATH="$HOME/projects"
+export ANSIBLE_REPOS_PATH="$HOME/work"
 export ANSIBLE_BOOTSTRAP_USER="$USER"
 
 
@@ -281,18 +287,15 @@ function launch-llama {
   $HOME/tools/llama.cpp/server -m "${MODEL}" -c 1024
 }
 
-function set-conda {
-# !! Contents within this block are managed by 'conda init' !!
-  __conda_setup="$('/home/irotnep/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-  if [ $? -eq 0 ]; then
-      eval "$__conda_setup"
-  else
-      if [ -f "/home/irotnep/miniconda3/etc/profile.d/conda.sh" ]; then
-          . "/home/irotnep/miniconda3/etc/profile.d/conda.sh"
-      else
-          export PATH="/home/irotnep/miniconda3/bin:$PATH"
-      fi
-  fi
-  unset __conda_setup
-# <<< conda initialize <<<
+function notes {
+    NOTES_DIR="${HOME}/Documents/notes/"
+    SELECTED=$(ls "${NOTES_DIR}" | fzf)
+    [[ -n "${SELECTED}" ]] && cd "${NOTES_DIR}/${SELECTED}" && vim ./
+}
+
+function wksp {
+    WKSP_DIR="${HOME}/work/workspace"
+    SELECTED=$(ls "${WKSP_DIR}" | fzf)
+    [[ -n "${SELECTED}" ]] && cd "${WKSP_DIR}/${SELECTED}" 
+    ls -all
 }
