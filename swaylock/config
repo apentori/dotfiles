@@ -11,15 +11,15 @@
 ignore-empty-password
 font="Fira Sans Semibold"
 
-# clock
-# timestr=%R
-# datestr=%a, %e of %B
+clock
+timestr=%R
+datestr=%a, %e of %B
 
 # Add current screenshot as wallpaper
 #screenshots
 
 # Add an image as a background 
-image=~/Pictures/wallpaper/lock_screen.jpg
+image=~/Pictures/wallpaper/lonely_guy.jpg
 
 
 # Fade in time
