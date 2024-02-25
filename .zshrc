@@ -61,7 +61,6 @@ alias grep='grep --color -i'
 alias c='curl -sslf'
 alias ap='ansible-playbook -d'
 alias cm='clipmenu'
-alias ssh='kitten ssh'
 
 # Function
 

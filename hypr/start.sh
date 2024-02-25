@@ -17,5 +17,7 @@ polkit-kde-agent
 
 swayosd-server
 
+cliphist wipe
+
 wl-paste --type text --watch cliphist store & #Stores only text data
 
