@@ -10,7 +10,7 @@ nm-applet --indicator &
 waybar &
 
 # Notification Daemon
-# swaync &
+swaync &
 
 # Auth agent
 polkit-kde-agent
