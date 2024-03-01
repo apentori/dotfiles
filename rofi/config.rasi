@@ -153,5 +153,5 @@ window{
 }
 //@theme "/usr/share/rofi/themes/DarkBlue.rasi"
 //@theme "/usr/share/rofi/themes/Pop-Dark.rasi"
-@theme "./themes/my_theme.rasi"
+@theme "./themes/catppuchin-mocha.rasi"
 //@theme "./themes/style_11.rasi"
