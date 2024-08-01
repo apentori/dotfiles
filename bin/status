@@ -1,3 +1,2 @@
 #/usr/bin/env bash
-
-appimage-run $HOME/tools/StatusIm-Desktop-240128-035700-ab6178-nightly-x86_64.AppImage &
+appimage-run $HOME/tools/StatusIm-Desktop.AppImage
