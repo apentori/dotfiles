@@ -3,6 +3,7 @@ export PATH="$PATH:/home/irotnep/.local/bin"
 export PATH="$PATH:$HOME/tools"
 export ZSH="$HOME/.oh-my-zsh"
 
+export VAULT_ADDR='https://vault.infra.status.im'
 # Magically link PYTHONPATH to the ZSH array pythonpath
 typeset -T PYTHONPATH pythonpath
 # Hacky way to provide python packages to Ansible for local tasks.
@@ -17,21 +18,16 @@ export PYTHONPATH
 
 ZSH_THEME="agnoster"
 ZSH_TMUX_AUTOSTART=true
-
-plugins=(
-	git
-	thefuck
-	thor
-	docker
-	ag
-	cp
-	history
-	terraform
-	ansible
-	vagrant
-	)
-
 source $ZSH/oh-my-zsh.sh
+
+if [ -n "${commands[fzf-share]}" ]; then
+  source "$(fzf-share)/key-bindings.zsh"
+  source "$(fzf-share)/completion.zsh"
+fi
+
+# Replace Capslock with Ctrl:
+# Not working with Wayland
+#setxkbmap -layout us -option ctrl:swapcaps
 
 # SSH configuration for GPG
 
@@ -47,6 +43,8 @@ if which nvim >/dev/null; then
 else
     EDITOR="vim"
 fi
+# Vim movement
+set -o vi
 
 # Completion 
 # history of changing directories (cd)
@@ -61,6 +59,7 @@ alias grep='grep --color -i'
 alias c='curl -sslf'
 alias ap='ansible-playbook -d'
 alias cm='clipmenu'
+alias p="playerctl"
 
 # Function
 
@@ -153,6 +152,17 @@ function a {
     fi
 }
 compdef a=ansible
+
+
+function a-p {
+  if [[ $# == 1 ]]; then
+    ansible-playbook ansible/$1
+  elif [[ $# == 2 ]]; then
+    ansible-playbook ansible/"$1" -t "$2"
+  else 
+    ansible-playbook "$@"
+  fi 
+}
 
 function select-work-dir() {
     echo "${HOME}"
@@ -279,6 +289,24 @@ function clean-docker-container {
   fi
 
 }
+
+zle-keymap-select () {
+    [[ $KEYMAP = vicmd ]] \
+        && echo -ne "\033]12;Red\007" \
+        || echo -ne "\033]12;White\007"
+}
+zle-line-finish () { zle -K viins; echo -ne "\033]12;White\007"; }
+zle-line-init ()   { zle -K viins; echo -ne "\033]12;White\007"; }
+# Enable Vi mode.
+bindkey -v
+if [[ $TERM != "linux" ]]; then # Only if terminal is graphical.
+    zle -N zle-keymap-select
+    zle -N zle-line-finish
+    zle -N zle-line-init
+fi
+
+bindkey "^E" edit-command-line
+
 
 function launch-llama {
   MODEL="$HOME/tools/models/Mistral-7B-v0.1/ggml-model_q4_1"
