@@ -1,0 +1,33 @@
+import = [
+#  "~/.config/alacritty/catppuccin-mocha.toml"
+  "~/.config/alacritty/catppuccin-macchiato.toml"
+]
+#[env]
+#TERM = "xterm-256color"
+#
+[font]
+size = 10.0
+#
+#[font.bold]
+#family = "Fira code"
+#style = "Bold"
+#
+#[font.bold_italic]
+#family = "Fira code"
+#style = "Bold Italic"
+#
+#[font.italic]
+#family = "Fira code"
+#style = "Italic"
+#
+#[font.normal]
+#family = "Fira code"
+#style = "Regular"
+#
+#[window]
+#opacity = 0.85
+#title = "Alacritty"
+#
+#[window.class]
+#general = "Alacritty"
+#instance = "Alacritty"
