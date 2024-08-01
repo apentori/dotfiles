@@ -9,6 +9,7 @@
         quotePath   = false
         commitGraph = true
         autocrlf    = input
+        whitespace = trailing-space,space-before-tab
     [diff]
         tool        = vimdif
     [merge]
@@ -73,4 +74,10 @@
     [receive]
         advertisePushOptions = true
     [gc]
-        writeCommitGraph = true
+      writeCommitGraph = true
+    [apply]
+      whitespace = fix
+    [filter "fix-eol-eof"]
+        clean = fixup-eol-eof %f
+        smudge = cat %f
+        required = true
