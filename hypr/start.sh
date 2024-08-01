@@ -2,7 +2,7 @@
 #
 swww init &
 # setting wallpaper
-swww img ~/Pictures/wallpaper/lonely_guy.jpg
+#swww img ~/Pictures/wallpaper/lonely_guy.jpg
 
 nm-applet --indicator &
 
