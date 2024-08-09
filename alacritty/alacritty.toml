@@ -24,9 +24,9 @@ size = 10.0
 #family = "Fira code"
 #style = "Regular"
 #
-#[window]
-#opacity = 0.85
-#title = "Alacritty"
+[window]
+opacity = 0.8
+title = "Alacritty"
 #
 #[window.class]
 #general = "Alacritty"
