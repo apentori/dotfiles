@@ -3,7 +3,7 @@ export PATH="$PATH:/home/irotnep/.local/bin"
 export PATH="$PATH:$HOME/tools"
 export ZSH="$HOME/.oh-my-zsh"
 
-export VAULT_ADDR='https://vault.infra.status.im'
+export VAULT_ADDR='https://vault-api.infra.status.im:8200'
 # Magically link PYTHONPATH to the ZSH array pythonpath
 typeset -T PYTHONPATH pythonpath
 # Hacky way to provide python packages to Ansible for local tasks.
@@ -179,6 +179,7 @@ function export-working-vars() {
   echo 'Exporting vars for Ansible & Terraform'
   export PASSWORD_STORE_DIR=/home/irotnep/.password-store
   export CONSUL_HTTP_TOKEN=$(pass services/consul/http_token)
+  export VAULT_TOKEN=$(pass personnal/vault/token)
   eval "$(bw unlock $(pass personnal/bitwarden ) |grep "$ export" | cut -b 3-)"
   export PASSWORD_STORE_DIR=/home/irotnep/work/infra-pass
 }
@@ -220,7 +221,6 @@ export PATH=~/bin:$PATH
 
 export ANSIBLE_REPOS_PATH="$HOME/work"
 export ANSIBLE_BOOTSTRAP_USER="$USER"
-
 
 # Auto Completion
 function fzf-systemctl () {
@@ -307,11 +307,27 @@ fi
 
 bindkey "^E" edit-command-line
 
+function o {
+  if [[ $1 == "c" ]]; then
+    sudo openssl x509 -text -noout -in $2
+  elif [[ $1 == "k" ]]; then
+    sudo openssl rsa -text -modulus -noout -in $2
+  else
+    sudo openssl "$@"
+  fi
+}
 
-function launch-llama {
-  MODEL="$HOME/tools/models/Mistral-7B-v0.1/ggml-model_q4_1"
-  echo "Launching Llama.cpp with models ${MODEL}"
-  $HOME/tools/llama.cpp/server -m "${MODEL}" -c 1024
+function v {
+  if [[ $# == 0 ]]; then
+    vault status
+  elif [[ $1  == "put" ]]; then
+    vault kv put -mount=secret "$2" "$3"
+  elif [[ $! == "get" ]]; then
+    vault kv get -mount=secret "$2"
+  else
+    vault "$@"
+  fi
+
 }
 
 function notes {
@@ -326,3 +342,5 @@ function wksp {
     [[ -n "${SELECTED}" ]] && cd "${WKSP_DIR}/${SELECTED}" 
     ls -all
 }
+
+eval "$(direnv hook zsh)"
