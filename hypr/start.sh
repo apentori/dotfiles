@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 #
-swww init &
 # setting wallpaper
-#swww img ~/Pictures/wallpaper/lonely_guy.jpg
-
+hyprpaper &
 nm-applet --indicator &
 
 # The bar
