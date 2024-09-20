@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+appimage-run $HOME/tools/Obsidian-1.5.8.AppImage
+
