@@ -208,12 +208,6 @@ function reload-gpg() {
   gpg-connect-agent updatestartuptty /bye > /dev/null
 }
 
-
-function export-dotfile(){
-  scp $HOME/projects/infra-role-bootstrap-linux/files/users/irotnep/config/.zshrc "$1":/home/irotnep/
-}
-
-
 eval $(thefuck --alias)
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
@@ -320,14 +314,15 @@ function o {
 function v {
   if [[ $# == 0 ]]; then
     vault status
-  elif [[ $1  == "put" ]]; then
+  elif [[ $1  == "p" ]]; then
     vault kv put -mount=secret "$2" "$3"
-  elif [[ $! == "get" ]]; then
+  elif [[ $1 == "g" ]]; then
     vault kv get -mount=secret "$2"
+  elif [[ $1 == "l" ]]; then
+    vault kv list -mount=secret "$2"
   else
     vault "$@"
   fi
-
 }
 
 function notes {
