@@ -1,2 +1,3 @@
 .ssh/*
 .zsh/cache
+nvim/lazy-lock.json
