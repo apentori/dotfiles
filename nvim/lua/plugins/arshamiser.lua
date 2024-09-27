@@ -9,7 +9,7 @@ return {
 	},
 	config = function()
 		-- ignore any parts you don't want to use
-		vim.cmd.colorscheme("arshamiser_light")
+		--vim.cmd.colorscheme("arshamiser_light")
 		require("arshamiser.feliniser")
 		-- or:
 		-- require("arshamiser.heirliniser")
