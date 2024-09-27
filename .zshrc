@@ -35,6 +35,7 @@ export GPG_TTY="$(tty)"
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
 gpgconf --launch gpg-agent
 gpg-connect-agent updatestartuptty /bye > /dev/null
+export PATH="${PATH}:${HOME}/snippet"
 
 # Exports 
 if which nvim >/dev/null; then
@@ -76,7 +77,7 @@ function src() {
 }
 
 function switch-yubikey() {
-  gpg-connect-agent "scd serialno" "learn --force" /bye  
+  gpg-connect-agent "scd serialno" "learn --force" /bye
 }
 
 # g as simple shortcut for git status or just git if any other arguments are given
@@ -159,9 +160,9 @@ function a-p {
     ansible-playbook ansible/$1
   elif [[ $# == 2 ]]; then
     ansible-playbook ansible/"$1" -t "$2"
-  else 
+  else
     ansible-playbook "$@"
-  fi 
+  fi
 }
 
 function select-work-dir() {
@@ -172,7 +173,7 @@ function select-work-dir() {
     echo
     zle reset-prompt
 }
-zle     -N   select-work-dir
+zle     -N select-work-dir
 bindkey '^a' select-work-dir
 
 function export-working-vars() {
@@ -246,7 +247,7 @@ function fzf-docker () {
         --preview-window=bottom,50
   )
   if [ -n "${selected}" ]; then
-    BUFFER="docker logs -f -n 50  ${selected}"
+    BUFFER="docker logs -f -n 50 ${selected}"
     zle accept-line
   fi
   zle reset-prompt
@@ -290,7 +291,7 @@ zle-keymap-select () {
         || echo -ne "\033]12;White\007"
 }
 zle-line-finish () { zle -K viins; echo -ne "\033]12;White\007"; }
-zle-line-init ()   { zle -K viins; echo -ne "\033]12;White\007"; }
+zle-line-init () { zle -K viins; echo -ne "\033]12;White\007"; }
 # Enable Vi mode.
 bindkey -v
 if [[ $TERM != "linux" ]]; then # Only if terminal is graphical.
@@ -314,7 +315,7 @@ function o {
 function v {
   if [[ $# == 0 ]]; then
     vault status
-  elif [[ $1  == "p" ]]; then
+  elif [[ $1 == "p" ]]; then
     vault kv put -mount=secret "$2" "$3"
   elif [[ $1 == "g" ]]; then
     vault kv get -mount=secret "$2"
