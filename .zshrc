@@ -37,7 +37,7 @@ gpgconf --launch gpg-agent
 gpg-connect-agent updatestartuptty /bye > /dev/null
 export PATH="${PATH}:${HOME}/snippet"
 
-# Exports 
+# Exports
 if which nvim >/dev/null; then
     EDITOR="nvim"
     alias vim='nvim'
@@ -47,7 +47,7 @@ fi
 # Vim movement
 set -o vi
 
-# Completion 
+# Completion
 # history of changing directories (cd)
 setopt AUTO_PUSHD                 # pushes the old directory onto the stack
 setopt PUSHD_MINUS                # exchange the meanings of '+' and '-'
@@ -262,7 +262,6 @@ function fzf-git () {
     echo "${services}" | fzf --query "$LBUFFER" \
         --preview='git log --oneline --graph ${1}' \
         --preview-window=bottom,40
-
   )
   if [ -n "${selected}" ]; then
     BUFFER="git switch ${selected}"
@@ -283,6 +282,38 @@ function clean-docker-container {
     docker rm $(docker ps -a | tail -n +2 | awk '{print $1}')
   fi
 
+}
+
+function fzf-vault () {
+  local secrets_path=$(vault kv get -format=json -mount=metadata list-secrets | jq -r '.data.data.key' | jq -r '.[]' )
+  local selected=$(
+    echo "${secrets_path}" | fzf \
+        --query "$LBUFFER" \
+        --preview='vault kv get -mount=secret -format=json ${1} | jq ".data.data" | jq "keys[]"' \
+        --sync \
+        --preview-window=bottom,10
+  )
+  if [ -n "${selected}" ]; then
+    BUFFER="vault kv get -mount=secret ${selected}"
+    zle accept-line
+  fi
+  zle reset-prompt
+}
+zle -N fzf-vault
+bindkey '^v' fzf-vault
+
+function v {
+  if [[ $# == 0 ]]; then
+    vault status
+  elif [[ $1 == "p" ]]; then
+    vault kv put -mount=secret "$2" "$3"
+  elif [[ $1 == "g" ]]; then
+    vault kv get -mount=secret "$2"
+  elif [[ $1 == "l" ]]; then
+    vault kv list -mount=secret "$2"
+  else
+    vault "$@"
+  fi
 }
 
 zle-keymap-select () {
@@ -309,20 +340,6 @@ function o {
     sudo openssl rsa -text -modulus -noout -in $2
   else
     sudo openssl "$@"
-  fi
-}
-
-function v {
-  if [[ $# == 0 ]]; then
-    vault status
-  elif [[ $1 == "p" ]]; then
-    vault kv put -mount=secret "$2" "$3"
-  elif [[ $1 == "g" ]]; then
-    vault kv get -mount=secret "$2"
-  elif [[ $1 == "l" ]]; then
-    vault kv list -mount=secret "$2"
-  else
-    vault "$@"
   fi
 }
 
