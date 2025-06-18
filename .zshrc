@@ -1,9 +1,8 @@
-# Export 
+# Export
 export PATH="$PATH:/home/irotnep/.local/bin"
 export PATH="$PATH:$HOME/tools"
 export ZSH="$HOME/.oh-my-zsh"
 
-export VAULT_ADDR='https://vault-api.infra.status.im:8200'
 # Magically link PYTHONPATH to the ZSH array pythonpath
 typeset -T PYTHONPATH pythonpath
 # Hacky way to provide python packages to Ansible for local tasks.
@@ -61,7 +60,7 @@ alias c='curl -sslf'
 alias ap='ansible-playbook -d'
 alias cm='clipmenu'
 alias p="playerctl"
-
+alias dc="docker compose"
 # Function
 
 
@@ -73,9 +72,7 @@ function src() {
     [[ -f ~/.zcompdump ]] && zrecompile -p ~/.zcompdump
     [[ -f ~/.zshrc.zwc.old ]] && rm -f ~/.zshrc.zwc.old
     [[ -f ~/.zcompdump.zwc.old ]] && rm -f ~/.zcompdump.zwc.old
-    source ~/.zshrc
-}
-
+    source ~/.zshrc }
 function switch-yubikey() {
   gpg-connect-agent "scd serialno" "learn --force" /bye
 }
@@ -176,13 +173,31 @@ function select-work-dir() {
 zle     -N select-work-dir
 bindkey '^a' select-work-dir
 
+
+function select-project-dir() {
+    echo "${HOME}"
+    PROJECT_DIR="${HOME}/projects"
+    SELECTED=$(ls "${PROJECT_DIR}" | fzf)
+    [[ -n "${SELECTED}" ]] && cd "${PROJECT_DIR}/${SELECTED}"
+    echo
+    zle reset-prompt
+}
+zle     -N select-project-dir
+bindkey '^p' select-project-dir
+
 function export-working-vars() {
-  echo 'Exporting vars for Ansible & Terraform'
+  echo "Loading workspace Tokens"
+  echo "."
   export PASSWORD_STORE_DIR=/home/irotnep/.password-store
+  echo ".."
   export CONSUL_HTTP_TOKEN=$(pass services/consul/http_token)
+  echo "..."
   export VAULT_TOKEN=$(pass personnal/vault/token)
-  eval "$(bw unlock $(pass personnal/bitwarden ) |grep "$ export" | cut -b 3-)"
+  echo "...."
   export PASSWORD_STORE_DIR=/home/irotnep/work/infra-pass
+  echo "Workspace loaded, Happy hacking"
+  zle reset-prompt
+
 }
 zle -N export-working-vars
 bindkey '^w' export-working-vars
@@ -311,6 +326,8 @@ function v {
     vault kv get -mount=secret "$2"
   elif [[ $1 == "l" ]]; then
     vault kv list -mount=secret "$2"
+  elif [[ $1 == "f" ]]; then
+    vault kv get -format=json -mount=secret "$2" | jq -r .data.data.\"$3\"
   else
     vault "$@"
   fi
@@ -352,8 +369,18 @@ function notes {
 function wksp {
     WKSP_DIR="${HOME}/work/workspace"
     SELECTED=$(ls "${WKSP_DIR}" | fzf)
-    [[ -n "${SELECTED}" ]] && cd "${WKSP_DIR}/${SELECTED}" 
+    [[ -n "${SELECTED}" ]] && cd "${WKSP_DIR}/${SELECTED}"
     ls -all
 }
 
+function sources {
+  SOURCES_DIR="${HOME}/source"
+  SELECTED=$(ls "${SOURCES_DIR}" | fzf)
+  [[ -n ${SELECTED} ]] && cd "${SOURCES_DIR}/${SELECTED}"
+  ls -all
+}
+
+function rand {
+  openssl rand -hex $1
+}
 eval "$(direnv hook zsh)"

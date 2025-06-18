@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+artiste=$1
+album=$2
+
+for i in *;
+do
+  file_name=$(awk -F '.mp3' '{print $1}' <<< $i)
+  echo $file_name
+  number=$(awk -F ' - ' '{print $1}' <<< $file_name)
+  title=$(awk -F ' - ' '{print $2}' <<< $file_name)
+  echo "number: ${number}"
+  echo "title: ${title}"
+  id3v2 --song "${title}" \
+    --artist "${artiste}" \
+    --album "${album}" \
+    --track "${number}" "${i}"
+done

@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+url=$1
+artist=$2
+album=$3
+
+
+folder="$HOME/Music/${artist}/${album}"
+mkdir -p "${folder}"
+
+cd "${folder}"
+
+if [[ "$url" =~ "playlist" ]]; then
+  yt-dlp -x -o "%(playlist_index)s - %(title)s.%(ext)s" \
+    --audio-format mp3 \
+    --write-thumbnail -o "thumbnail:" \
+    $url
+else
+  yt-dlp -x -o "%(section_number)s - %(section_title)s.%(ext)s" \
+    --audio-format mp3 \
+    --split-chapter \
+    --write-thumbnail -o "thumbnail:" \
+    $url
+fi
+
+rename "$artist - " '' *
+rename "$album " '' *
+rename '[Full Album - Album Complet]' '' *
+rename ' (Official Video)' '' *
+get-music-info $artist $album
+
+#scp -r $folder hyperion.irotnep.net:/data/jellyfin/media/musics/${artist}
