@@ -72,3 +72,11 @@ map('n', '<A-0>', '<Cmd>BufferLast<CR>', opts)
 map('n', '<A-p>', '<Cmd>BufferPin<CR>', opts)
 -- Close buffer
 map('n', '<A-c>', '<Cmd>BufferClose<CR>', opts)
+
+
+-- LuxTerm
+vim.keymap.set("n", "<leader>tn", ":LuxtermNew<CR>", { desc = "New terminal" })
+vim.keymap.set("n", "<leader>tl", ":LuxtermList<CR>", { desc = "List terminals" })
+vim.keymap.set("n", "<leader>tk", ":LuxtermKill<CR>", { desc = "Kill terminal" })
+vim.keymap.set("n", "<leader>tj", ":LuxtermNext<CR>", { desc = "Next terminal session" })
+vim.keymap.set("n", "<leader>th", ":LuxtermPrev<CR>", { desc = "Previous terminal session" })
