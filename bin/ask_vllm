@@ -1,0 +1,79 @@
+#!/usr/bin/env python
+
+import click
+import requests
+import time
+import json
+from typing import Optional
+
+# Default vLLM server endpoint (change if needed)
+DEFAULT_API_URL = "http://localhost:8000/v1/chat/completions"
+
+@click.command()
+@click.option("--model", default=None, help="Model name (optional). If not provided, uses default from server.")
+@click.option("--api-url", default=DEFAULT_API_URL, help="vLLM OpenAI-compatible API endpoint.")
+@click.option("-p", "--prompt", required=True, prompt="What question do you have ?",help="User prompt to send to the model.")
+def main(model: Optional[str], api_url: str, prompt: str):
+    """
+    Send a chat request to a remote vLLM server and display the response,
+    token count, and time taken.
+    """
+    # Prepare the request payload
+    payload = {
+        "messages": [
+            {"role": "user", "content": prompt}
+        ],
+        "max_tokens": 512,
+        "temperature": 0.7,
+        "top_p": 0.9,
+        "stop": None,
+        "chat_template_kwargs": {"enable_thinking": False},
+        "stream": False,  # We want full response, not streaming
+    }
+
+    # Optionally override model
+    if model:
+        payload["model"] = model
+
+    # Start timing
+    start_time = time.time()
+
+    try:
+        # Make the HTTP request
+        response = requests.post(api_url, json=payload, timeout=30)
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        click.echo(f"❌ Error connecting to vLLM server: {e}", err=True)
+        exit(1)
+
+    # End timing
+    end_time = time.time()
+    total_time = end_time - start_time
+
+    # Parse response
+    try:
+        data = response.json()
+    except json.JSONDecodeError:
+        click.echo("❌ Invalid JSON response from server.", err=True)
+        exit(1)
+
+    # Extract response text
+    response_text = data["choices"][0]["message"]
+
+    # Extract token usage
+    usage = data["usage"]
+    total_tokens = usage["total_tokens"]
+    prompt_tokens = usage["prompt_tokens"]
+    completion_tokens = usage["completion_tokens"]
+
+    # Output results
+    click.echo("💬 Response:")
+    click.echo(response_text)
+    click.echo("📊 Token Usage:")
+    click.echo(f" Prompt tokens: {prompt_tokens}")
+    click.echo(f" Completion tokens: {completion_tokens}")
+    click.echo(f" Total tokens: {total_tokens}")
+    click.echo(f"⏱️ Time taken: {total_time:.2f} seconds")
+
+if __name__ == "__main__":
+    main()

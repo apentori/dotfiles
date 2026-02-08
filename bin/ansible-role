@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Script to create an Ansible Role template
+
+ROLE_NAME=$1
+
+mkdir -p ansible/roles/${ROLE_NAME}/{defaults,templates,tasks}
+
+cat <<EOT >> ansible/roles/$ROLE_NAME/defaults/main.yml
+${ROLE_NAME}_service_name: '${ROLE_NAME}'
+${ROLE_NAME}_service_path: '/docker/${ROLE_NAME}'
+EOT
