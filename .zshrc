@@ -2,6 +2,7 @@
 export PATH="$PATH:/home/irotnep/.local/bin"
 export PATH="$PATH:$HOME/tools"
 export ZSH="$HOME/.oh-my-zsh"
+export BC_ENV_ARGS="$HOME/.bc"
 
 # Magically link PYTHONPATH to the ZSH array pythonpath
 typeset -T PYTHONPATH pythonpath
@@ -56,7 +57,7 @@ zstyle ':completion:*:directory-stack' list-colors '=(#b) #([0-9]#)*( *)==95=38;
 # Aliases
 alias ll='ls -lh --color'
 alias grep='grep --color -i'
-alias c='curl -sslf'
+alias c='curl --show-error --fail-with-body --silent'
 alias ap='ansible-playbook -d'
 alias cm='clipmenu'
 alias p="playerctl"
@@ -224,13 +225,16 @@ function reload-gpg() {
   gpg-connect-agent updatestartuptty /bye > /dev/null
 }
 
-eval $(thefuck --alias)
-
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export PATH=~/bin:$PATH
 
 export ANSIBLE_REPOS_PATH="$HOME/work"
 export ANSIBLE_BOOTSTRAP_USER="$USER"
+export VAULT_CACERT=$ANSIBLE_REPOS_PATH/infra-hq/ansible/files/vault-ca.crt
+export VAULT_CLIENT_CERT=$ANSIBLE_REPOS_PATH/infra-hq/ansible/files/vault-client-user.crt
+export VAULT_CLIENT_KEY=$ANSIBLE_REPOS_PATH/infra-hq/ansible/files/vault-client-user.key
+export VAULT_ADDR=https://vault-api.infra.status.im:8200
+
 
 # Auto Completion
 function fzf-systemctl () {
@@ -300,11 +304,11 @@ function clean-docker-container {
 }
 
 function fzf-vault () {
-  local secrets_path=$(vault kv get -format=json -mount=metadata list-secrets | jq -r '.data.data.key' | jq -r '.[]' )
+  local secrets_path=$(vault kv get -tls-skip-verify -format=json -mount=metadata list-secrets | jq -r '.data.data.key' | jq -r '.[]' )
   local selected=$(
     echo "${secrets_path}" | fzf \
         --query "$LBUFFER" \
-        --preview='vault kv get -mount=secret -format=json ${1} | jq ".data.data" | jq "keys[]"' \
+        --preview='vault kv get -tls-skip-verify -mount=secret -format=json ${1} | jq ".data.data" | jq "keys[]"' \
         --sync \
         --preview-window=bottom,10
   )
@@ -367,14 +371,14 @@ function notes {
 }
 
 function wksp {
-    WKSP_DIR="${HOME}/work/workspace"
+    WKSP_DIR="${HOME}/workspaces"
     SELECTED=$(ls "${WKSP_DIR}" | fzf)
     [[ -n "${SELECTED}" ]] && cd "${WKSP_DIR}/${SELECTED}"
     ls -all
 }
 
 function sources {
-  SOURCES_DIR="${HOME}/source"
+  SOURCES_DIR="${HOME}/sources"
   SELECTED=$(ls "${SOURCES_DIR}" | fzf)
   [[ -n ${SELECTED} ]] && cd "${SOURCES_DIR}/${SELECTED}"
   ls -all
@@ -383,4 +387,17 @@ function sources {
 function rand {
   openssl rand -hex $1
 }
+
+function k {
+  if [[ $1 == "d" ]]; then
+    kubectl get deployments
+  elif [[ $1 == "p" ]]; then
+    kubectl get pods
+  elif [[ $1 == "e" ]]; then
+    kubectl get event
+  else
+    kubectl "$@"
+  fi
+}
+
 eval "$(direnv hook zsh)"

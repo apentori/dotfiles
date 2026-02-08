@@ -2,13 +2,14 @@
 set -eo pipefail
 
 # Complet this later
-conf_dir=("hypr" "dunst" "kitty" "rofi" "swaylock" "waybar" "wlogout" "alacritty" "nvim")
+conf_dir=("hypr" "dunst" "kitty" "rofi" "swaylock" "waybar" "wlogout" "alacritty" "nvim" "gtk-3.0" "flameshot", "swaync")
 for dir in "${conf_dir[@]}"
 do
   echo "Creating symlink of ${dir}"
   ln -sf "${HOME}/projects/dotfiles/${dir}" "${HOME}/.config"
 done
 
-ln -sf "${HOME}/bin " "${HOME}"
+ln -sf "${HOME}/projects/dotfiles/bin" "${HOME}"
 ln -sf "${HOME}/projects/dotfiles/.zshrc" "${HOME}"
 ln -sf "${HOME}/projects/dotfiles/.gitconfig" "${HOME}"
+ln -sf "${HOME}/projects/dotfiles/.bc" "${HOME}"
