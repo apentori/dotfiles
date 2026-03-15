@@ -2,7 +2,7 @@
 set -eo pipefail
 
 # Complet this later
-conf_dir=("hypr" "dunst" "kitty" "rofi" "swaylock" "waybar" "wlogout" "alacritty" "nvim" "gtk-3.0" "flameshot", "swaync")
+conf_dir=("hypr" "dunst" "kitty" "rofi" "swaylock" "waybar" "wlogout" "alacritty" "nvim" "gtk-3.0" "flameshot" "swaync" "opencode")
 for dir in "${conf_dir[@]}"
 do
   echo "Creating symlink of ${dir}"
