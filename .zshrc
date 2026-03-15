@@ -388,16 +388,84 @@ function rand {
   openssl rand -hex $1
 }
 
+
+## Kubernetes
 function k {
   if [[ $1 == "d" ]]; then
-    kubectl get deployments
+    kubectl get deployments -o wide
   elif [[ $1 == "p" ]]; then
-    kubectl get pods
+    kubectl get pods -o wide
   elif [[ $1 == "e" ]]; then
-    kubectl get event
+    kubectl get event -o wide
+  elif [[ $1 == "n" ]]; then
+    fzf-kub-namespace
+  elif [[ $1 == "l" ]]; then
+    fzf-kub-log
+  elif [[ $1 == "desc" ]]; then
+    fzf-kub-describe $2
   else
     kubectl "$@"
   fi
+}
+
+function fzf-kub-describe(){
+  local type=$1
+
+  if [ -z "$type" ]; then
+    echo "Usage: kdesc <resource-type> (e.g., kdesc pod)"
+    return 1
+  fi
+
+  local selection=$(kubectl get "$type" -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' | fzf --height 40% --reverse --prompt="Select $type > ")
+
+  if [ -n "$selection" ]; then
+    kubectl describe "$type" "$selection"
+  else
+    echo "No $type selected."
+  fi
+}
+
+function fzf-kub-log() {
+  local pod=$(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' | fzf --height 40% --reverse --prompt="Select Pod > ")
+  [ -z "$pod" ] && return
+
+  local containers=$(kubectl get pod "$pod" -o jsonpath='{.spec.containers[*].name}' | tr ' ' '\n')
+  local container_count=$(echo "$containers" | wc -w)
+  local target_container=""
+
+  if [ "$container_count" -gt 1 ]; then
+    target_container=$(echo "$containers" | fzf --height 20% --reverse --prompt="Select Container > ")
+    [ -z "$target_container" ] && return
+  else
+    target_container=$containers
+  fi
+
+  echo "--- Streaming logs for $pod ($target_container) ---"
+  kubectl logs -f "$pod" -c "$target_container"
+}
+
+function fzf-kub-namespace () {
+  local target_ns=$(kubectl get namespaces -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | fzf --height 40% --reverse --prompt="Select Namespace > ")
+
+  if [ -n "$target_ns" ]; then
+    kubectl config set-context --current --namespace="$target_ns"
+    echo "✔ Context switched to namespace: $target_ns"
+  else
+    echo "No namespace selected."
+  fi
+}
+
+
+# open Code
+
+function oc() {
+  SOURCES_DIR=$1
+  SELECTED=$(ls "${SOURCES_DIR}" | fzf)
+  [[ -n ${SELECTED} ]] && docker run -it --rm --name opencode \
+      -v $HOME/"${SOURCES_DIR}/${SELECTED}"/:/repos/${SELECTED} \
+      -v $HOME/.local/share/opencode/auth.json:/root/.local/share/opencode/auth.json:ro \
+      -v $HOME/.config/opencode/:/root/.config/opencode:ro \
+      ghcr.io/anomalyco/opencode /repos/${SELECTED}
 }
 
 eval "$(direnv hook zsh)"
