@@ -10,7 +10,7 @@ from typing import Optional
 DEFAULT_API_URL = "http://localhost:8000/v1/chat/completions"
 
 @click.command()
-@click.option("--model", default=None, help="Model name (optional). If not provided, uses default from server.")
+@click.option("-m","--model", default=None, help="Model name (optional). If not provided, uses default from server.")
 @click.option("--api-url", default=DEFAULT_API_URL, help="vLLM OpenAI-compatible API endpoint.")
 @click.option("-p", "--prompt", required=True, prompt="What question do you have ?",help="User prompt to send to the model.")
 def main(model: Optional[str], api_url: str, prompt: str):
