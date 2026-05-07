@@ -1,4 +1,5 @@
 return {
-    "mason-org/mason.nvim",
-    opts = {}
+    { "mason-org/mason.nvim",
+      dependencies = { "mason-org/mason-lspconfig.nvim", "neovim/nvim-lspconfig" },
+      opts = {} },
 }

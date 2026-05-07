@@ -1,6 +1,5 @@
 require('options')
 require('plugins')
-require("lazy").setup("plugins")
 require('colorschema')
 require('lsp')
 require('keymaps')

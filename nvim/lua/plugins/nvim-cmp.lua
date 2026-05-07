@@ -1,5 +1,5 @@
 return {
-	-- Vscode-like pictograms
+  -- Vscode-like pictograms
 	{
 		"onsails/lspkind.nvim",
 		event = { "VimEnter" },
@@ -8,7 +8,7 @@ return {
 	{
 		"hrsh7th/nvim-cmp",
 		dependencies = {
-			"lspkind.nvim",
+			"onsails/lspkind.nvim",
 			"hrsh7th/cmp-nvim-lsp", -- lsp auto-completion
 			"hrsh7th/cmp-buffer", -- buffer auto-completion
 			"hrsh7th/cmp-path", -- path auto-completion

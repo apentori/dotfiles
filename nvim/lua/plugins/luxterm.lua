@@ -1,5 +1,4 @@
 return {
-  {
   "luxvim/nvim-luxterm",
   config = function()
     require("luxterm").setup({
@@ -16,5 +15,4 @@ return {
       }
     })
   end
-},
 }
