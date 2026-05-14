@@ -230,9 +230,9 @@ export PATH=~/bin:$PATH
 
 export ANSIBLE_REPOS_PATH="$HOME/work"
 export ANSIBLE_BOOTSTRAP_USER="$USER"
-export VAULT_CACERT=$ANSIBLE_REPOS_PATH/infra-hq/ansible/files/vault-ca.crt
-export VAULT_CLIENT_CERT=$ANSIBLE_REPOS_PATH/infra-hq/ansible/files/vault-client-user.crt
-export VAULT_CLIENT_KEY=$ANSIBLE_REPOS_PATH/infra-hq/ansible/files/vault-client-user.key
+export VAULT_CACERT=$XDG_RUNTIME_DIR/ift-infra-secrets/vault-ca.crt
+export VAULT_CLIENT_CERT=$XDG_RUNTIME_DIR/ift-infra-secrets/vault-client-user.crt
+export VAULT_CLIENT_KEY=$XDG_RUNTIME_DIR/ift-infra-secrets/vault-client-user.key
 export VAULT_ADDR=https://vault-api.infra.status.im:8200
 
 
@@ -461,11 +461,12 @@ function fzf-kub-namespace () {
 function oc() {
   SOURCES_DIR=$1
   SELECTED=$(ls "${SOURCES_DIR}" | fzf)
-  [[ -n ${SELECTED} ]] && docker run -it --rm --name opencode \
+  [[ -n ${SELECTED} ]] && docker run -it --rm -p 4740:4740 --name opencode \
       -v $HOME/"${SOURCES_DIR}/${SELECTED}"/:/repos/${SELECTED} \
-      -v $HOME/.local/share/opencode/auth.json:/root/.local/share/opencode/auth.json:ro \
-      -v $HOME/.config/opencode/:/root/.config/opencode:ro \
-      ghcr.io/anomalyco/opencode /repos/${SELECTED}
+      -v $HOME/.opencode-mem0/:/root/.opencode-mem0 \
+      -v $HOME/.local/share/opencode/:/root/.local/share/opencode/ \
+      -v $HOME/projects/opencode-config/:/root/.config/opencode \
+      opencode:local --port 4740 --hostname 0.0.0.0 /repos/${SELECTED} $2
 }
 
 eval "$(direnv hook zsh)"
