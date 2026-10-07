@@ -74,9 +74,13 @@ map('n', '<A-p>', '<Cmd>BufferPin<CR>', opts)
 map('n', '<A-c>', '<Cmd>BufferClose<CR>', opts)
 
 
--- LuxTerm
+ -- LuxTerm
 vim.keymap.set("n", "<leader>tn", ":LuxtermNew<CR>", { desc = "New terminal" })
 vim.keymap.set("n", "<leader>tl", ":LuxtermList<CR>", { desc = "List terminals" })
 vim.keymap.set("n", "<leader>tk", ":LuxtermKill<CR>", { desc = "Kill terminal" })
 vim.keymap.set("n", "<leader>tj", ":LuxtermNext<CR>", { desc = "Next terminal session" })
 vim.keymap.set("n", "<leader>th", ":LuxtermPrev<CR>", { desc = "Previous terminal session" })
+
+-- Conform (Formatting)
+vim.keymap.set("n", "<leader>cf", function() require("conform").format({ async = true }) end, { desc = "Format buffer" })
+vim.keymap.set("v", "<leader>cf", function() require("conform").format({ async = true, range = { ['start'] = vim.fn.line("'<"), ['end'] = vim.fn.line(">") } }) end, { desc = "Format selected range" })

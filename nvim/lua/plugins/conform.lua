@@ -11,6 +11,12 @@ return {
         html = { "prettier" },
         css = { "prettier" },
         nix = { "nixfmt" },
+        sql = { "sql_formatter" },
+      },
+      formatters = {
+        sql_formatter = {
+          args = { "--config", '{"keywordCase": "upper"}' },
+        },
       },
     },
   },

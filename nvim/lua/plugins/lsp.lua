@@ -14,10 +14,10 @@ return {
        local capabilities = require('cmp_nvim_lsp').default_capabilities()
        local lspconfig = require("lspconfig")
  
-       -- 3. Setup Mason LSP Config with handlers
-       require("mason-lspconfig").setup({
-         ensure_installed = { "lua_ls", "pyright", "ts_ls" },
-         automatic_installation = true,
+        -- 3. Setup Mason LSP Config with handlers
+        require("mason-lspconfig").setup({
+          ensure_installed = { "lua_ls", "pyright", "ts_ls", "sqlls" },
+          automatic_installation = true,
          handlers = {
            function(server_name)
              lspconfig[server_name].setup({
