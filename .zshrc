@@ -3,6 +3,7 @@ export PATH="$PATH:/home/irotnep/.local/bin"
 export PATH="$PATH:$HOME/tools"
 export ZSH="$HOME/.oh-my-zsh"
 export BC_ENV_ARGS="$HOME/.bc"
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
 # Magically link PYTHONPATH to the ZSH array pythonpath
 typeset -T PYTHONPATH pythonpath
@@ -455,18 +456,28 @@ function fzf-kub-namespace () {
   fi
 }
 
+# Switch kubectl context using fzf
+kctx() {
+  local ctx
+  ctx=$(kubectl config get-contexts -o name | fzf --height=40% --prompt="Select Kubernetes context: ")
+  if [[ -n "$ctx" ]]; then
+    kubectl config use-context "$ctx"
+    echo "Switched to context: $ctx"
+  fi
+}
+
 
 # open Code
 
 function oc() {
   SOURCES_DIR=$1
   SELECTED=$(ls "${SOURCES_DIR}" | fzf)
-  [[ -n ${SELECTED} ]] && docker run -it --rm -p 4740:4740 --name opencode \
+  [[ -n ${SELECTED} ]] && docker run -it --rm --name opencode-${SELECTED} \
       -v $HOME/"${SOURCES_DIR}/${SELECTED}"/:/repos/${SELECTED} \
-      -v $HOME/.opencode-mem0/:/root/.opencode-mem0 \
       -v $HOME/.local/share/opencode/:/root/.local/share/opencode/ \
       -v $HOME/projects/opencode-config/:/root/.config/opencode \
-      opencode:local --port 4740 --hostname 0.0.0.0 /repos/${SELECTED} $2
+      -v $HOME/Documents/obsidian/work/04-opencode/${SOURCES_DIR}/${SELECTED}:/docs \
+      opencode:local  /repos/${SELECTED} $2
 }
 
 eval "$(direnv hook zsh)"
