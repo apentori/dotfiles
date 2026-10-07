@@ -2,3 +2,5 @@
 .zsh/cache
 nvim/lazy-lock.json
 node_modules
+bin/StatusIm-Desktop.AppImage
+
