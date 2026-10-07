@@ -1,3 +1,5 @@
+local luasnip = require("luasnip")
+
 return {
   luasnip.snippet(
     "task",
