@@ -84,3 +84,7 @@ vim.keymap.set("n", "<leader>th", ":LuxtermPrev<CR>", { desc = "Previous termina
 -- Conform (Formatting)
 vim.keymap.set("n", "<leader>cf", function() require("conform").format({ async = true }) end, { desc = "Format buffer" })
 vim.keymap.set("v", "<leader>cf", function() require("conform").format({ async = true, range = { ['start'] = vim.fn.line("'<"), ['end'] = vim.fn.line(">") } }) end, { desc = "Format selected range" })
+
+-- Aerial (symbols outline)
+vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle<CR>", { desc = "Toggle symbols outline" })
+vim.keymap.set("n", "<leader>A", "<cmd>AerialNavToggle<CR>", { desc = "Navigate symbols (float)" })
